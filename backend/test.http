@@ -1,0 +1,34 @@
+### Get all library items (empty for now)
+GET http://localhost:5000/api/library
+
+###  Add Inception to the library
+POST http://localhost:5000/api/library
+Content-Type: application/json
+
+{
+  "tmdb_id": 27205,
+  "media_type": "movie",
+  "title": "Inception",
+  "poster_path": "/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",
+  "overview": "Cobb, a skilled thief...",
+  "release_date": "2010-07-16",
+  "vote_average": 8.4,
+  "genres": [{"id": 28, "name": "Action"}, {"id": 878, "name": "Sci-Fi"}],
+  "status": "watchlist"
+}
+
+### Get Inception from library
+GET http://localhost:5000/api/library/27205
+
+### Mark Inception as watched
+PUT http://localhost:5000/api/library/27205
+Content-Type: application/json
+
+{
+  "status": "watched",
+  "personal_rating": 9.5,
+  "review_note": "Mind-blowing film, loved every minute."
+}
+
+### Delete Inception from library
+DELETE http://localhost:5000/api/library/27205
