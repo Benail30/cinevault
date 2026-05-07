@@ -32,3 +32,34 @@ Content-Type: application/json
 
 ### Delete Inception from library
 DELETE http://localhost:5000/api/library/27205
+
+### Get current XP and level
+GET http://localhost:5000/api/xp
+
+### Award XP for watching a movie
+POST http://localhost:5000/api/xp
+Content-Type: application/json
+
+{
+  "action": "watched_movie",
+  "tmdb_id": 27205
+}
+
+### Award XP for adding a rating
+POST http://localhost:5000/api/xp
+Content-Type: application/json
+
+{
+  "action": "added_rating",
+  "tmdb_id": 27205
+}
+
+### Get full XP log
+GET http://localhost:5000/api/xp/log
+
+### Get all trophies (locked and unlocked)
+GET http://localhost:5000/api/trophies
+
+### Check and unlock new trophies
+POST http://localhost:5000/api/trophies/check
+Content-Type: application/json

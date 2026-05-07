@@ -17,9 +17,13 @@ app.use(express.json());
 // Routes
 const moviesRouter = require("./routes/movies");
 const libraryRouter = require("./routes/library");
+const xpRouter = require("./routes/xp");
+const trophiesRouter = require("./routes/trophies");
 
 app.use("/api/movies", moviesRouter);
 app.use("/api/library", libraryRouter);
+app.use("/api/xp", xpRouter);
+app.use("/api/trophies", trophiesRouter);
 
 // Root route
 app.get("/", (req, res) => {
