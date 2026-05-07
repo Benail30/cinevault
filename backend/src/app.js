@@ -27,7 +27,7 @@ app.use("/api/trophies", trophiesRouter);
 
 // Root route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to CineVault API" });
+  res.json({ message: "Welcome to Cinephiles Inc. API" });
 });
 
 // Health check

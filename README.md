@@ -1,1 +1,1 @@
-# CineVault
+# Cinephiles Inc.

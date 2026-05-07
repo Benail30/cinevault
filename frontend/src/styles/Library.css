@@ -1,0 +1,151 @@
+.library {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.library-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+}
+
+/* Stats bar */
+.library-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  background: #1a1917;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  min-width: 90px;
+  border: 1px solid #2a2927;
+}
+
+.stat-number {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #e8a020;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #888888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Tabs */
+.library-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  border: 1px solid #333;
+  background: transparent;
+  color: #aaaaaa;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  border-color: #e8a020;
+  color: #e8a020;
+}
+
+.tab-btn.active {
+  background: #e8a020;
+  border-color: #e8a020;
+  color: #0d0d0f;
+  font-weight: 700;
+}
+
+/* Library card wrapper */
+.library-card-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.library-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+  flex-wrap: wrap;
+}
+
+/* Status badges */
+.status-badge {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-watchlist {
+  background: #2a3a4a;
+  color: #6ab0e0;
+}
+.status-watching {
+  background: #2a3a2a;
+  color: #6ae06a;
+}
+.status-watched {
+  background: #3a2a1a;
+  color: #e8a020;
+}
+
+.personal-rating {
+  font-size: 0.75rem;
+  color: #e8a020;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-left: auto;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  padding: 2px;
+}
+
+.remove-btn:hover {
+  opacity: 1;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.empty-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.empty-subtitle {
+  color: #888888;
+  font-size: 0.95rem;
+}
