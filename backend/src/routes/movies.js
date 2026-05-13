@@ -12,6 +12,7 @@ router.get("/trending", async (req, res) => {
     const data = await getTrendingMovies();
     res.json(data);
   } catch (error) {
+    console.error("Trending movies error:", error.message || error);
     res.status(500).json({ error: "Failed to fetch trending movies" });
   }
 });

@@ -3,6 +3,12 @@ const axios = require("axios");
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 const TMDB_ACCESS_TOKEN = process.env.TMDB_ACCESS_TOKEN;
 
+if (!TMDB_ACCESS_TOKEN) {
+  console.error(
+    "❌ TMDB_ACCESS_TOKEN is not set. Add it to your backend .env or Vercel environment variables.",
+  );
+}
+
 // This is the axios instance we'll reuse for every TMDB call
 const tmdb = axios.create({
   baseURL: TMDB_BASE_URL,
@@ -33,5 +39,10 @@ const getMovieById = async (id) => {
   });
   return response.data;
 };
+// Generic TMDB GET — used for watch providers and anything else
+const getTmdbData = async (endpoint, params = {}) => {
+  const response = await tmdb.get(endpoint, { params });
+  return response.data;
+};
 
-module.exports = { getTrendingMovies, searchMovies, getMovieById };
+module.exports = { getTrendingMovies, searchMovies, getMovieById, getTmdbData };
