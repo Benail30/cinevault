@@ -1,8 +1,23 @@
 const express = require("express");
 const cors = require("cors");
+const fs = require("fs");
+const path = require("path");
 const dotenv = require("dotenv");
 
-dotenv.config();
+const envPath = path.resolve(__dirname, "../.env");
+const envSrcPath = path.resolve(__dirname, ".env");
+
+if (fs.existsSync(envPath)) {
+  dotenv.config({ path: envPath });
+}
+
+if (!process.env.TMDB_ACCESS_TOKEN && fs.existsSync(envSrcPath)) {
+  dotenv.config({ path: envSrcPath });
+}
+
+if (!fs.existsSync(envPath) && !fs.existsSync(envSrcPath)) {
+  dotenv.config();
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;

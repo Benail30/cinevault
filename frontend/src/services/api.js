@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Dynamic API URL based on environment
-const getBaseURL = () => {
+export const getBaseURL = () => {
   if (import.meta.env.DEV) {
     // Development: use local backend (no /api prefix locally)
     return "http://localhost:5000";
@@ -10,7 +10,6 @@ const getBaseURL = () => {
   return "https://cinephiles-inc-api.vercel.app/api";
 };
 
-// All backend calls go through this base URL
 const api = axios.create({
   baseURL: getBaseURL(),
 });
