@@ -11,7 +11,10 @@ const PORT = process.env.PORT || 5000;
 app.use(
   cors({
     origin: [
-      "http://localhost:5173", // Vite dev server
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://127.0.0.1:5173",
+      "http://127.0.0.1:5174",
       "https://cinephiles-inc.vercel.app", // your production frontend
       "https://cinephiles-98e4aa7z8-benali-ghassens-projects.vercel.app", // preview deploys
     ],
