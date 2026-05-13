@@ -1,8 +1,18 @@
 import axios from "axios";
 
+// Dynamic API URL based on environment
+const getBaseURL = () => {
+  if (import.meta.env.DEV) {
+    // Development: use local backend (no /api prefix locally)
+    return "http://localhost:5000";
+  }
+  // Production: use Vercel backend
+  return "https://cinephiles-inc-api.vercel.app/api";
+};
+
 // All backend calls go through this base URL
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: getBaseURL(),
 });
 
 // --- Movies ---
@@ -26,3 +36,7 @@ export const awardXP = (action, tmdb_id) =>
 // --- Trophies ---
 export const getTrophies = () => api.get("/trophies");
 export const checkTrophies = () => api.post("/trophies/check");
+
+// --- Watch Providers ---
+export const getWatchProviders = (tmdb_id, type = "movie") =>
+  api.get(`/watch-providers/${tmdb_id}?type=${type}`);
