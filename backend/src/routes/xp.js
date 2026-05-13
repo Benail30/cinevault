@@ -3,9 +3,9 @@ const router = express.Router();
 const { getTotalXP, getLevelInfo, awardXP, getXPLog } = require("../models/xp");
 
 // GET /api/xp — get current XP, level, and progress
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const totalXP = getTotalXP();
+    const totalXP = await getTotalXP();
     const levelInfo = getLevelInfo(totalXP);
     res.json(levelInfo);
   } catch (error) {
@@ -14,9 +14,9 @@ router.get("/", (req, res) => {
 });
 
 // GET /api/xp/log — get full XP history
-router.get("/log", (req, res) => {
+router.get("/log", async (req, res) => {
   try {
-    const log = getXPLog();
+    const log = await getXPLog();
     res.json(log);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch XP log" });
@@ -24,7 +24,7 @@ router.get("/log", (req, res) => {
 });
 
 // POST /api/xp — award XP for an action
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const { action, tmdb_id } = req.body;
 
@@ -32,7 +32,7 @@ router.post("/", (req, res) => {
       return res.status(400).json({ error: "Action is required" });
     }
 
-    const result = awardXP(action, tmdb_id || null);
+    const result = await awardXP(action, tmdb_id || null);
 
     if (!result) {
       return res.status(400).json({ error: `Unknown action: ${action}` });

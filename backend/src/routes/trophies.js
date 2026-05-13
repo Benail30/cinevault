@@ -3,9 +3,9 @@ const router = express.Router();
 const { getAllTrophies, checkTrophies } = require("../models/trophies");
 
 // GET /api/trophies — all trophies with locked/unlocked status
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const trophies = getAllTrophies();
+    const trophies = await getAllTrophies();
     const unlocked = trophies.filter((t) => t.unlocked).length;
     const total = trophies.length;
 
@@ -16,9 +16,9 @@ router.get("/", (req, res) => {
 });
 
 // POST /api/trophies/check — run trophy check after any library update
-router.post("/check", (req, res) => {
+router.post("/check", async (req, res) => {
   try {
-    const newlyUnlocked = checkTrophies();
+    const newlyUnlocked = await checkTrophies();
     res.json({
       newlyUnlocked,
       count: newlyUnlocked.length,

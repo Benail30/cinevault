@@ -18,17 +18,17 @@ const XP_REWARDS = {
   completed_show: 50,
   added_rating: 5,
   added_review: 5,
-  top_rated_bonus: 20, // TMDB score >= 8.0
-  classic_bonus: 15, // released before 1980
+  top_rated_bonus: 20,
+  classic_bonus: 15,
 };
 
 // Get total XP by summing the xp_log table
-const getTotalXP = () => {
-  const row = db.prepare("SELECT SUM(xp_earned) as total FROM xp_log").get();
-  return row.total || 0;
+const getTotalXP = async () => {
+  const result = await db.execute("SELECT SUM(xp_earned) as total FROM xp_log");
+  return result.rows[0]?.total || 0;
 };
 
-// Calculate level from total XP
+// Calculate level from total XP (pure logic, stays sync)
 const getLevelInfo = (totalXP) => {
   let currentLevel = LEVELS[0];
   let nextLevel = LEVELS[1];
@@ -49,24 +49,25 @@ const getLevelInfo = (totalXP) => {
 };
 
 // Award XP for an action
-const awardXP = (action, tmdb_id = null) => {
+const awardXP = async (action, tmdb_id = null) => {
   const xp_earned = XP_REWARDS[action];
   if (!xp_earned) return null;
 
-  db.prepare(
-    `
-    INSERT INTO xp_log (action, xp_earned, tmdb_id)
-    VALUES (?, ?, ?)
-  `,
-  ).run(action, xp_earned, tmdb_id);
+  await db.execute({
+    sql: `INSERT INTO xp_log (action, xp_earned, tmdb_id) VALUES (?, ?, ?)`,
+    args: [action, xp_earned, tmdb_id],
+  });
 
-  const totalXP = getTotalXP();
+  const totalXP = await getTotalXP();
   return { action, xp_earned, totalXP, levelInfo: getLevelInfo(totalXP) };
 };
 
 // Get full XP log history
-const getXPLog = () => {
-  return db.prepare("SELECT * FROM xp_log ORDER BY created_at DESC").all();
+const getXPLog = async () => {
+  const result = await db.execute(
+    "SELECT * FROM xp_log ORDER BY created_at DESC",
+  );
+  return result.rows;
 };
 
 module.exports = {

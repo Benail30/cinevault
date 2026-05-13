@@ -10,10 +10,10 @@ const {
 } = require("../models/library");
 
 // GET /api/library — get everything in the library
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const { status } = req.query;
-    const items = status ? getByStatus(status) : getAll();
+    const items = status ? await getByStatus(status) : await getAll();
     res.json(items);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch library" });
@@ -21,9 +21,9 @@ router.get("/", (req, res) => {
 });
 
 // GET /api/library/:tmdb_id — check if a title is in the library
-router.get("/:tmdb_id", (req, res) => {
+router.get("/:tmdb_id", async (req, res) => {
   try {
-    const item = getByTmdbId(parseInt(req.params.tmdb_id));
+    const item = await getByTmdbId(parseInt(req.params.tmdb_id));
     if (!item) return res.status(404).json({ error: "Not found in library" });
     res.json(item);
   } catch (error) {
@@ -32,7 +32,7 @@ router.get("/:tmdb_id", (req, res) => {
 });
 
 // POST /api/library — add a title to the library
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const {
       tmdb_id,
@@ -48,12 +48,12 @@ router.post("/", (req, res) => {
     } = req.body;
 
     // Check if already exists
-    const existing = getByTmdbId(tmdb_id);
+    const existing = await getByTmdbId(tmdb_id);
     if (existing) {
       return res.status(409).json({ error: "Title already in library" });
     }
 
-    addToLibrary({
+    await addToLibrary({
       tmdb_id,
       media_type,
       title,
@@ -66,7 +66,7 @@ router.post("/", (req, res) => {
       status: status || "watchlist",
     });
 
-    const newItem = getByTmdbId(tmdb_id);
+    const newItem = await getByTmdbId(tmdb_id);
     res.status(201).json(newItem);
   } catch (error) {
     res.status(500).json({ error: "Failed to add to library" });
@@ -74,10 +74,10 @@ router.post("/", (req, res) => {
 });
 
 // PUT /api/library/:tmdb_id — update status, rating, review
-router.put("/:tmdb_id", (req, res) => {
+router.put("/:tmdb_id", async (req, res) => {
   try {
     const tmdb_id = parseInt(req.params.tmdb_id);
-    const existing = getByTmdbId(tmdb_id);
+    const existing = await getByTmdbId(tmdb_id);
     if (!existing)
       return res.status(404).json({ error: "Not found in library" });
 
@@ -87,6 +87,7 @@ router.put("/:tmdb_id", (req, res) => {
       "review_note",
       "is_favorite",
       "date_watched",
+      "watch_source",
     ];
     const updates = {};
     allowed.forEach((field) => {
@@ -98,8 +99,8 @@ router.put("/:tmdb_id", (req, res) => {
       updates.date_watched = new Date().toISOString();
     }
 
-    updateItem(tmdb_id, updates);
-    const updatedItem = getByTmdbId(tmdb_id);
+    await updateItem(tmdb_id, updates);
+    const updatedItem = await getByTmdbId(tmdb_id);
     res.json(updatedItem);
   } catch (error) {
     res.status(500).json({ error: "Failed to update item" });
@@ -107,14 +108,14 @@ router.put("/:tmdb_id", (req, res) => {
 });
 
 // DELETE /api/library/:tmdb_id — remove from library
-router.delete("/:tmdb_id", (req, res) => {
+router.delete("/:tmdb_id", async (req, res) => {
   try {
     const tmdb_id = parseInt(req.params.tmdb_id);
-    const existing = getByTmdbId(tmdb_id);
+    const existing = await getByTmdbId(tmdb_id);
     if (!existing)
       return res.status(404).json({ error: "Not found in library" });
 
-    removeFromLibrary(tmdb_id);
+    await removeFromLibrary(tmdb_id);
     res.json({ message: `"${existing.title}" removed from library` });
   } catch (error) {
     res.status(500).json({ error: "Failed to remove item" });

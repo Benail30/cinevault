@@ -226,3 +226,165 @@
   color: #888888;
   font-size: 1.1rem;
 }
+/* ===== WATCH SOURCE ===== */
+.source-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: 0.6rem;
+  background: #2a2927;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  color: #e8a020;
+  font-weight: 600;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid #3a3937;
+  color: #aaa;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-ghost:hover {
+  border-color: #e8a020;
+  color: #e8a020;
+}
+
+.watch-source-picker {
+  margin-top: 1.2rem;
+  background: #1a1917;
+  border: 1px solid #2a2927;
+  border-radius: 12px;
+  padding: 1.2rem;
+}
+
+.watch-source-label {
+  font-size: 0.85rem;
+  color: #aaa;
+  margin-bottom: 0.8rem;
+}
+
+.watch-source-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.watch-source-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #2a2927;
+  border: 1px solid #3a3937;
+  border-radius: 8px;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #ccc;
+}
+
+.watch-source-btn:hover {
+  border-color: #e8a020;
+  color: #e8a020;
+}
+
+.watch-source-btn.active {
+  border-color: #e8a020;
+  background: #2a2315;
+  color: #e8a020;
+  font-weight: 600;
+}
+
+.ws-icon {
+  font-size: 1rem;
+}
+.ws-label {
+  font-size: 0.82rem;
+}
+/* ===== WATCH PROVIDERS ===== */
+.watch-providers-wrap {
+  margin: 1.2rem 0;
+}
+
+.wp-toggle {
+  background: #1a1917;
+  border: 1px solid #3a3937;
+  color: #ccc;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.wp-toggle:hover {
+  border-color: #e8a020;
+  color: #e8a020;
+}
+
+.wp-body {
+  background: #1a1917;
+  border: 1px solid #2a2927;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin-top: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.provider-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.provider-row-label {
+  font-size: 0.8rem;
+  color: #888;
+  min-width: 70px;
+}
+
+.provider-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.provider-logo-wrap {
+  display: block;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.provider-logo-wrap:hover {
+  transform: scale(1.1);
+}
+
+.provider-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: block;
+}
+
+.wp-credit {
+  font-size: 0.72rem;
+  color: #555;
+  margin-top: 0.2rem;
+}
+
+.wp-loading,
+.wp-empty {
+  font-size: 0.85rem;
+  color: #666;
+  padding: 0.4rem 0;
+}

@@ -7,9 +7,38 @@ import {
   updateLibraryItem,
 } from "../services/api";
 import "../styles/MovieDetail.css";
-
+import WatchProviders from "../components/WatchProviders";
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 const BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w1280";
+
+const WATCH_SOURCES = [
+  { id: "streaming", label: "Streaming", icon: "📡" },
+  { id: "dvd", label: "DVD", icon: "💿" },
+  { id: "bluray", label: "Blu-ray", icon: "🔵" },
+  { id: "cinema", label: "Cinema", icon: "🎟️" },
+  { id: "download", label: "Download", icon: "⬇️" },
+  { id: "other", label: "Other", icon: "📺" },
+];
+
+function WatchSourcePicker({ current, onSelect }) {
+  return (
+    <div className="watch-source-picker">
+      <p className="watch-source-label">How did you watch it?</p>
+      <div className="watch-source-options">
+        {WATCH_SOURCES.map((s) => (
+          <button
+            key={s.id}
+            className={`watch-source-btn ${current === s.id ? "active" : ""}`}
+            onClick={() => onSelect(s.id)}
+          >
+            <span className="ws-icon">{s.icon}</span>
+            <span className="ws-label">{s.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function MovieDetail() {
   const { id } = useParams();
@@ -20,8 +49,8 @@ function MovieDetail() {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [message, setMessage] = useState(null);
+  const [showSourcePicker, setShowSourcePicker] = useState(false);
 
-  // Fetch movie data and check if it's in the library
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -29,7 +58,6 @@ function MovieDetail() {
           getMovieById(id),
           getLibraryItem(id),
         ]);
-
         if (movieRes.status === "fulfilled") setMovie(movieRes.value.data);
         if (libraryRes.status === "fulfilled")
           setLibraryItem(libraryRes.value.data);
@@ -39,11 +67,9 @@ function MovieDetail() {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [id]);
 
-  // Add movie to library with a given status
   const handleAddToLibrary = async (status) => {
     setActionLoading(true);
     try {
@@ -59,10 +85,10 @@ function MovieDetail() {
         genres: movie.genres,
         status,
       });
-
       const updated = await getLibraryItem(movie.id);
       setLibraryItem(updated.data);
       setMessage(`✅ Added to ${status}!`);
+      if (status === "watched") setShowSourcePicker(true);
     } catch (err) {
       setMessage("❌ Already in your library.");
     } finally {
@@ -71,7 +97,6 @@ function MovieDetail() {
     }
   };
 
-  // Update status of an existing library item
   const handleUpdateStatus = async (status) => {
     setActionLoading(true);
     try {
@@ -79,11 +104,27 @@ function MovieDetail() {
       const updated = await getLibraryItem(movie.id);
       setLibraryItem(updated.data);
       setMessage(`✅ Marked as ${status}!`);
+      if (status === "watched") setShowSourcePicker(true);
     } catch (err) {
       setMessage("❌ Failed to update.");
     } finally {
       setActionLoading(false);
       setTimeout(() => setMessage(null), 3000);
+    }
+  };
+
+  const handleSelectSource = async (sourceId) => {
+    try {
+      await updateLibraryItem(movie.id, { watch_source: sourceId });
+      const updated = await getLibraryItem(movie.id);
+      setLibraryItem(updated.data);
+      setShowSourcePicker(false);
+      setMessage(
+        `💾 Watch source saved: ${WATCH_SOURCES.find((s) => s.id === sourceId)?.label}`,
+      );
+      setTimeout(() => setMessage(null), 3000);
+    } catch (err) {
+      console.error("Failed to save watch source", err);
     }
   };
 
@@ -93,11 +134,9 @@ function MovieDetail() {
   const backdropUrl = movie.backdrop_path
     ? `${BACKDROP_BASE_URL}${movie.backdrop_path}`
     : null;
-
   const posterUrl = movie.poster_path
     ? `${IMAGE_BASE_URL}${movie.poster_path}`
     : null;
-
   const year = movie.release_date?.split("-")[0];
   const runtime = movie.runtime
     ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`
@@ -105,9 +144,12 @@ function MovieDetail() {
   const director = movie.credits?.crew?.find((c) => c.job === "Director");
   const cast = movie.credits?.cast?.slice(0, 6) || [];
 
+  const currentSource = WATCH_SOURCES.find(
+    (s) => s.id === libraryItem?.watch_source,
+  );
+
   return (
     <div className="detail-page">
-      {/* Backdrop */}
       {backdropUrl && (
         <div
           className="detail-backdrop"
@@ -115,18 +157,15 @@ function MovieDetail() {
         />
       )}
 
-      {/* Back button */}
       <button className="back-btn" onClick={() => navigate(-1)}>
         ← Back
       </button>
 
       <div className="detail-content">
-        {/* Poster */}
         <div className="detail-poster">
           {posterUrl && <img src={posterUrl} alt={movie.title} />}
         </div>
 
-        {/* Info */}
         <div className="detail-info">
           <h1 className="detail-title">{movie.title}</h1>
 
@@ -138,7 +177,6 @@ function MovieDetail() {
             </span>
           </div>
 
-          {/* Genres */}
           <div className="detail-genres">
             {movie.genres?.map((g) => (
               <span key={g.id} className="genre-tag">
@@ -147,22 +185,20 @@ function MovieDetail() {
             ))}
           </div>
 
-          {/* Overview */}
           <p className="detail-overview">{movie.overview}</p>
 
-          {/* Director */}
           {director && (
             <p className="detail-director">
               🎬 Directed by <strong>{director.name}</strong>
             </p>
           )}
-
+          {/* Where to Watch */}
+          <WatchProviders tmdbId={movie.id} mediaType="movie" />
           {/* Library Actions */}
           <div className="detail-actions">
             {message && <p className="action-message">{message}</p>}
 
             {!libraryItem ? (
-              // Not in library yet
               <div className="action-buttons">
                 <button
                   className="btn btn-primary"
@@ -180,10 +216,14 @@ function MovieDetail() {
                 </button>
               </div>
             ) : (
-              // Already in library — show current status + update options
               <div className="action-buttons">
                 <p className="current-status">
                   Status: <strong>{libraryItem.status}</strong>
+                  {currentSource && (
+                    <span className="source-badge">
+                      {currentSource.icon} {currentSource.label}
+                    </span>
+                  )}
                 </p>
                 {libraryItem.status !== "watched" && (
                   <button
@@ -203,7 +243,26 @@ function MovieDetail() {
                     ▶️ Currently Watching
                   </button>
                 )}
+                {/* Change source anytime */}
+                {libraryItem.status === "watched" && (
+                  <button
+                    className="btn btn-ghost"
+                    onClick={() => setShowSourcePicker((v) => !v)}
+                  >
+                    {currentSource
+                      ? `${currentSource.icon} Change Source`
+                      : "💿 Set Watch Source"}
+                  </button>
+                )}
               </div>
+            )}
+
+            {/* Watch Source Picker */}
+            {showSourcePicker && (
+              <WatchSourcePicker
+                current={libraryItem?.watch_source}
+                onSelect={handleSelectSource}
+              />
             )}
           </div>
 
