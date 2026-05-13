@@ -22,6 +22,24 @@ app.use(
 );
 app.use(express.json());
 
+// Initialize database and create tables
+const { createTables } = require("./db/schema");
+
+// Ensure tables are created before first request
+let dbInitialized = false;
+app.use(async (req, res, next) => {
+  if (!dbInitialized) {
+    try {
+      await createTables();
+      dbInitialized = true;
+    } catch (error) {
+      console.error("Database initialization error:", error);
+      return res.status(500).json({ error: "Database initialization failed" });
+    }
+  }
+  next();
+});
+
 // Routes
 const moviesRouter = require("./routes/movies");
 const libraryRouter = require("./routes/library");
@@ -46,23 +64,6 @@ app.get("/health", (req, res) => {
     status: "ok",
     message: "CineVault backend is running!",
   });
-});
-
-// Initialize database and create tables
-const { createTables } = require("./db/schema");
-
-// Ensure tables are created before first request
-let dbInitialized = false;
-app.use(async (req, res, next) => {
-  if (!dbInitialized) {
-    try {
-      await createTables();
-      dbInitialized = true;
-    } catch (error) {
-      console.error("Database initialization error:", error);
-    }
-  }
-  next();
 });
 
 // EXPORT for Vercel serverless functions
